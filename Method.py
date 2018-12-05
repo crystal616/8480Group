@@ -49,8 +49,8 @@ def pred_list (movieId_list, movie_user_dict): ##Here must user movieId not inde
     user_list = list(set(user_list))
     return user_list
 
-def selected_watched_list(userId, user_movie_dict, movie_user_dict, movieId_index_trans, similarity_matrix):
-    rec_list=[]
+def rec_movie_list(userId, user_movie_dict, movie_user_dict, movieId_index_trans, similarity_matrix):
+#     rec_list=[]
     select_movie = []
     watched_list = user_movie_dict.get(str(userId))
     mean = sum(watched_list.values()) / float(len(watched_list))
