@@ -22,8 +22,6 @@ def recall_precision (pred_list, real_list, recall, precision):
     
 def order_list (similarity_list):
     indices = []
-    min = 0
-    indices.update({"origin":min})
     size = similarity_list.shape[0]
     limit = 1.09
     
@@ -34,16 +32,7 @@ def order_list (similarity_list):
                 indices.append(i)
     
     return indices
-#     for i in range (0, size):
-#         value = similarity_list[i]
-#         if len(indices) <= 10:
-#             indices.update({str(i):value})
-#         elif value > min:
-#             indices.update({str(i):value})
-#             indices.p
-#             min = 2
-#             for key in indices:
-#                 if min > indices.get(key):
-#                     min = indices.get(key)
+
+
     
     
