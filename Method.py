@@ -17,8 +17,8 @@ def recall_precision (pred_list, real_list):
         if user in real_list:
             count = count + 1
     
-    recall = count / real_count
-    precision = count / pred_count
+    recall = count / float(real_count)
+    precision = count / float(pred_count)
     return recall, precision
     
     
