@@ -4,11 +4,11 @@ Created on Dec 4, 2018
 @author: Ying
 '''
 from Cosine import similarity_matrix
+import pandas as pd
 
 
 
-
-def recall_precision (pred_list, real_list, recall, precision):
+def recall_precision (pred_list, real_list):
     count = 0
     real_count = real_list.shape[0] # or len(real_list)
     pred_count = pred_list.shape[0]
@@ -19,6 +19,7 @@ def recall_precision (pred_list, real_list, recall, precision):
     
     recall = count / real_count
     precision = count / pred_count
+    return recall, precision
     
     
 def select_movie_basedon_similarity (similarity_matrix, movieId):
@@ -44,11 +45,11 @@ def pred_list (movieId_list, movie_user_dict): ##Here must user movieId not inde
 #             if movie_user_df.at[i, "movieId"] == movie:
 #                 user_list.append(movie_user_df.at[i, "userId"])
     for movieId in movieId_list:
-        user_list.extend(list(movie_user_dict[movieId].keys()))
+        user_list.extend(list(movie_user_dict.get(movieId).keys()))
     user_list = list(set(user_list))
     return user_list
 
-def selected_watched_list(userId, user_movie_dict, movieId_index_trans, similarity_matrix):
+def selected_watched_list(userId, user_movie_dict, movie_user_dict, movieId_index_trans, similarity_matrix):
     rec_list=[]
     select_movie = []
     watched_list = user_movie_dict.get(str(userId))
@@ -59,7 +60,10 @@ def selected_watched_list(userId, user_movie_dict, movieId_index_trans, similari
     select_movie = list(set(select_movie))
     
     if len(select_movie) > 50: #recommend 50 movies or 100
-        
+        temp_df = pd.DataFrame(columns=['movieId', 'count'])
+        for movie in select_movie:
+            temp_df.append({movie: len(movie_user_dict.get(movie))})
+        temp_df = temp_df.sor
         
     
 
