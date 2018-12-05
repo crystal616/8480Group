@@ -9,8 +9,27 @@ from LensKitTest import user_movie_dict
 
 
 
-# def recall_precision (pred_list, real_watch_dict):
+def recall_precision (pred_list, real_watch_dict):
+    count = 0
+    real_count = len(real_watch_dict)
+    pred_count = pred_list.shape[0]
+      
+    for user in pred_list:
+        if real_watch_dict.get(user,0) != 0:
+            count = count + 1
+      
+    recall = count / float(real_count)
+    precision = count / float(pred_count)
+    return recall, precision
+      
+def user_realwatch_list (movie_user_dict, movieId):
+    m_dict = movie_user_dict.get(str(movieId))
+#     r_list = m_dict.keys()
+    return m_dict
+
+# def recall_precision (pred_list, movieId, movie_user_dict):
 #     count = 0
+#     real_watch_dict = movie_user_dict.get(str(movieId))
 #     real_count = len(real_watch_dict)
 #     pred_count = pred_list.shape[0]
 #      
@@ -21,25 +40,6 @@ from LensKitTest import user_movie_dict
 #     recall = count / float(real_count)
 #     precision = count / float(pred_count)
 #     return recall, precision
-    
-# def real_list (movie_user_dict, movieId):
-#     m_dict = movie_user_dict.get(str(movieId))
-# #     r_list = m_dict.keys()
-#     return m_dict
-
-def recall_precision (pred_list, movieId, movie_user_dict):
-    count = 0
-    real_watch_dict = movie_user_dict.get(str(movieId))
-    real_count = len(real_watch_dict)
-    pred_count = pred_list.shape[0]
-     
-    for user in pred_list:
-        if real_watch_dict.get(user,0) != 0:
-            count = count + 1
-     
-    recall = count / float(real_count)
-    precision = count / float(pred_count)
-    return recall, precision
     
 def select_movie_basedon_similarity (similarity_matrix, movieId):
     movieIndex = #translate here
@@ -95,7 +95,8 @@ def rec_movie_list(userId, user_movie_train_dict, movie_user_train_dict, movieId
 def sortSecond(val): 
     return val[1]
 
-def real_watch_list (user_movie_dict, userId):
+def movie_realwatch_list (user_movie_test_dict, userId):
+    return user_movie_test_dict.get(userId)
     
 
     
