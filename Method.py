@@ -5,16 +5,17 @@ Created on Dec 4, 2018
 '''
 # from Cosine import similarity_matrix
 import pandas as pd
+from LensKitTest import user_movie_dict
 
 
 
-def recall_precision (pred_list, real_list):
+def recall_precision (pred_list, real_watch_dict):
     count = 0
-    real_count = real_list.shape[0] # or len(real_list)
+    real_count = len(real_watch_dict)
     pred_count = pred_list.shape[0]
     
     for user in pred_list:
-        if user in real_list:
+        if real_watch_dict.get(user,0) != 0:
             count = count + 1
     
     recall = count / float(real_count)
@@ -23,8 +24,8 @@ def recall_precision (pred_list, real_list):
     
 def real_list (movie_user_dict, movieId):
     m_dict = movie_user_dict.get(str(movieId))
-    r_list = m_dict.keys()
-    return r_list
+#     r_list = m_dict.keys()
+    return m_list
     
 def select_movie_basedon_similarity (similarity_matrix, movieId):
     movieIndex = #translate here
@@ -79,6 +80,7 @@ def rec_movie_list(userId, user_movie_dict, movie_user_dict, movieId_index_trans
 def sortSecond(val): 
     return val[1]
 
-
+def real_watch_list (user_movie_dict, userId):
+    
 
     
