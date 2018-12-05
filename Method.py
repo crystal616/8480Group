@@ -3,7 +3,7 @@ Created on Dec 4, 2018
 
 @author: Ying
 '''
-from Cosine import similarity_matrix
+# from Cosine import similarity_matrix
 import pandas as pd
 
 
@@ -28,14 +28,14 @@ def select_movie_basedon_similarity (similarity_matrix, movieId):
     similarity_list = similarity_matrix[movieIndex,:] ##??correct
     size = similarity_list.shape[0]
     limit = 1.09
-    
+     
     while len(indices) < 10:
         limit = limit - 0.1
         for i in range (0, size):
             if similarity_list[i] >= limit and i != movieIndex:
                 m_ID = #translate back here
                 IDs.append(m_ID)
-    
+     
     return IDs
 
 def pred_list (movieId_list, movie_user_dict): ##Here must user movieId not index
@@ -60,12 +60,21 @@ def selected_watched_list(userId, user_movie_dict, movie_user_dict, movieId_inde
     select_movie = list(set(select_movie))
     
     if len(select_movie) > 50: #recommend 50 movies or 100
-        temp_df = pd.DataFrame(columns=['movieId', 'count'])
+        temp_list = []
         for movie in select_movie:
-            temp_df.append({movie: len(movie_user_dict.get(movie))})
-        temp_df = temp_df.sor
+            temp_list.append((movie, len(movie_user_dict.get(str(movie)))))
+        temp_list.sort(key=sortSecond, reverse=True)
+        list_50 = temp_list[:50]
+        select_movie = []
+        for i in range (0, 50):
+            select_movie.append(list_50[i][0])
         
-    
+    return select_movie
 
-    
+        
+def sortSecond(val): 
+    return val[1]
+
+
+
     
