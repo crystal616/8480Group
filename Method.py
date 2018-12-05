@@ -21,6 +21,10 @@ def recall_precision (pred_list, real_list):
     precision = count / float(pred_count)
     return recall, precision
     
+def real_list (movie_user_dict, movieId):
+    m_dict = movie_user_dict.get(str(movieId))
+    r_list = m_dict.keys()
+    return r_list
     
 def select_movie_basedon_similarity (similarity_matrix, movieId):
     movieIndex = #translate here
