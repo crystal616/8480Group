@@ -25,7 +25,7 @@ def recall_precision (pred_list, real_watch_dict):
 def real_list (movie_user_dict, movieId):
     m_dict = movie_user_dict.get(str(movieId))
 #     r_list = m_dict.keys()
-    return m_list
+    return m_dict
     
 def select_movie_basedon_similarity (similarity_matrix, movieId):
     movieIndex = #translate here
