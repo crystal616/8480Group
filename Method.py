@@ -33,6 +33,13 @@ def order_list (similarity_list):
     
     return indices
 
-
+def pred_list (movieId_list, movie_user_df):
+    user_list = []
+    for movie in movieId_list:
+        for i in range (0, movie_user_df.shape[0]):
+            if movie_user_df.at[i, "movieId"] == movie:
+                user_list.append(movie_user_df.at[i, "userId"])
+    user_list = list(set(user_list))
+    return user_list
     
     
