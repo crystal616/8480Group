@@ -45,7 +45,7 @@ def pred_list (movieId_list, movie_user_dict): ##Here must user movieId not inde
 #             if movie_user_df.at[i, "movieId"] == movie:
 #                 user_list.append(movie_user_df.at[i, "userId"])
     for movieId in movieId_list:
-        user_list.extend(list(movie_user_dict.get(movieId).keys()))
+        user_list.extend(list(movie_user_dict.get(str(movieId)).keys()))
     user_list = list(set(user_list))
     return user_list
 
