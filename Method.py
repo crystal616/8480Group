@@ -68,11 +68,12 @@ def pred_list (movieId_list, movie_user_dict): ##Here must user movieId not inde
     user_list = list(set(user_list))
     return user_list
 
-def rec_movie_list(userId, user_movie_dict, movie_user_dict, movieId_index_trans, similarity_matrix):
+def rec_movie_list(userId, user_movie_train_dict, movie_user_train_dict, movieId_index_trans, similarity_matrix):
 #     rec_list=[]
     select_movie = []
-    watched_list = user_movie_dict.get(str(userId))
+    watched_list = user_movie_train_dict.get(str(userId))
     mean = sum(watched_list.values()) / float(len(watched_list))
+    maxRating = max(watched_list.values())
     for key in watched_list:
         if watched_list.get(key) >= mean:            
             select_movie.extend(select_movie_basedon_similarity(similarity_matrix, key))
@@ -81,7 +82,7 @@ def rec_movie_list(userId, user_movie_dict, movie_user_dict, movieId_index_trans
     if len(select_movie) > 50: #recommend 50 movies or 100
         temp_list = []
         for movie in select_movie:
-            temp_list.append((movie, len(movie_user_dict.get(str(movie)))))
+            temp_list.append((movie, len(movie_user_train_dict.get(str(movie)))))
         temp_list.sort(key=sortSecond, reverse=True)
         list_50 = temp_list[:50]
         select_movie = []
