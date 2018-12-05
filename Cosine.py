@@ -49,12 +49,17 @@ genre_matrix_T = genre_matrix.transpose()
  
 similarity_matrix = np.dot(genre_matrix, genre_matrix_T)
 
-cosine_sim = similarity_matrix
+root = np.zeros(22714, dtype = float)
+
+for i in range (0, 22714):
+    root[i] = math.sqrt(similarity_matrix[i][i])
+
+cosine_sim = np.zeros((22714,22714), dtype = float)
 
 for r in range (0, 22714):
     for l in range (r, 22714):
-        if (cosine_sim[r][l] != 0):            
-            cosine_sim[r][l] = cosine_sim[r][l] / math.sqrt(similarity_matrix[r][r]*similarity_matrix[l][l])
+        if (similarity_matrix[r][l] != 0):            
+            cosine_sim[r][l] = similarity_matrix[r][l] / (root[r]*root[l])
             cosine_sim[l][r] = cosine_sim[r][l]
 
 print(cosine_sim[0,:])
