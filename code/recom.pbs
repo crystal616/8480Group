@@ -1,0 +1,13 @@
+#PBS -N cpsc848
+#PBS -l select=1:ncpus=16:mem=128gb,walltime=24:00:00
+
+module add anaconda3/5.1.0
+
+
+conda activate
+
+cd code
+
+python DataProcess.py
+python movie.py
+python recom.py
