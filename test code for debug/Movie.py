@@ -1,6 +1,4 @@
 '''
-Created on Dec 2, 2018
-
 @author: Ying
 '''
 
