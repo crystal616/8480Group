@@ -1,3 +1,13 @@
+'''
+DataProcess.py
+Author: Ying Cai
+Date: 11/01/12
+Description: 
+Remove movies which have less than 25 watchers from dataset.
+Remove users who have watched less than 25 movies.
+Randomly split dataset into training and test sets. For each user, 20% of movies in his/her watching history are selected as test sample.
+'''
+
 import pandas as pd
 import numpy as np
 
@@ -24,12 +34,9 @@ raw_data=filter_data(raw_data, 'userId','movieId', 25)
 raw_data=filter_data(raw_data,'movieId', 'userId', 25)
 raw_data = raw_data.sort_values(by=['userId'])
 
-#movie_count = raw_data['movieId'].value_counts()
-
 movie_unique=raw_data['movieId'].unique()
 movie_left = movies.loc[movies['movieId'].isin(movie_unique)]
 
-#movie_count.to_csv('movie_count.csv',sep=',')
 raw_data.to_csv('rating_left.csv', sep=',', index=False)
 movie_left.to_csv('movie_left.csv',sep=',', index=False)
 
@@ -49,12 +56,11 @@ def user_sampling_from_df(ui_df, row_col_label, user_sample):
     """
     print("Rows in source df {}".format(ui_df.shape[0]))
     num_rows = ui_df.shape[0]
-    #num_rows = ui_df[row_col_label].max()
+
     random_index = random_index_sample(num_rows, user_sample)
     # preserve order of rows after sampling
     ui_df = ui_df.iloc[random_index]
     
-    #ui_df = ui_df[ui_df[row_col_label].isin(random_index)]
     print("Rows in df after user sampling {}".format(ui_df.shape[0]))
     return ui_df
 
