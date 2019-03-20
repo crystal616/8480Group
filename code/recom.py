@@ -1,8 +1,20 @@
+'''
+recom.py
+Author: Ying Cai
+Date: 11/10/12
+Description: 
+Compute movie similarity.
+Analyze user's watching list, select similar movies and recommend.
+Compute the recall and precision of the recommendation list.
+'''
+
 import pandas as pd
 import numpy as np
 import scipy as sp
 import math
+import json
 
+#cleaned full movie_genre dataset
 movie_genre = pd.read_csv("movie_left.csv")
 
 movieId2title = {}
@@ -11,8 +23,8 @@ movieId2index={}
 
 for i in range(0,len(movie_genre)):
     movieId=movie_genre.at[i, 'movieId']
-    title =movie_genre.at[i,'title']
-    movieId2title[movieId] = title
+    title=movie_genre.at[i,'title']
+    movieId2title[movieId]=title
     index2movieId[i]=movieId
     movieId2index[movieId]=i
 movie_genre.drop(columns="title")
@@ -23,7 +35,7 @@ row = movie_genre.shape[0]
 print(row)
 
 genre_matrix = np.zeros((row, 20 + 1), dtype = int)
-
+#movie genres
 names = ["Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","Film-Noir","Horror","Musical","Mystery","Romance","Sci-Fi","Thriller","War","Western","IMAX","(no genres listed)"]
 
 print(len(names))
@@ -39,15 +51,14 @@ for i in range (0, row):
         loc = names.index(g)+1
         genre_matrix[i][loc] = 1
         
-
 genre_matrix = genre_matrix[:,1:21]
-
-
 genre_matrix_T = genre_matrix.transpose()
- 
+
+#compute cosine similarity 
 similarity_matrix = np.dot(genre_matrix, genre_matrix_T)
 cosine_sim = similarity_matrix
-cosine_sim=cosine_sim.astype(float)
+cosine_sim = cosine_sim.astype(float)
+
 sqrt=[]
 for i in range(0,len(cosine_sim[0])):
     sqrt.append(math.sqrt(cosine_sim[i][i]))
@@ -58,7 +69,7 @@ for r in range (0, row):
             cosine_sim[r,l] = cosine_sim[r,l] / (sqrt[r]*sqrt[l])
             cosine_sim[l,r] = cosine_sim[r,l]
 
-
+#compute recall and precision of recommendation
 def recall_precision (pred_list, real_dict):
     count = 0
     real_count = len(real_dict)# or len(real_list)
@@ -68,26 +79,26 @@ def recall_precision (pred_list, real_dict):
     for user in pred_list:
         user = str(user)
         if real_dict.get(user,0) != 0:
-            count = count + 1
-        
-    
+            count = count + 1   
     recall = count / real_count
     precision = count / pred_count
     return recall, precision
-    
+
+#generate similar movie list, total # of chosen movies >= nn     
 def select_movie_basedon_similarity (similarity_matrix, movieIndex,nn,step):
     IDs = []
-    similarity_list = similarity_matrix[movieIndex,:] ##??correct
+    similarity_list = similarity_matrix[movieIndex,:] 
     size = similarity_list.shape[0]
     limit = 0.99+step
     
+	#choose movies whose similarity > 0.99. If we don't have >=nn movies selected, 
+	#decrease the threshold of similarity by one "step", start a new iteration
     while len(IDs) < nn:
         limit = limit - step
         for i in range (0, size):
             if similarity_list[i] >= limit and i != movieIndex:
                 m_ID = index2movieId[i]
-                IDs.append(m_ID)
-    
+                IDs.append(m_ID)    
     return IDs
 
 def pred_list (movieId_list, movie_user_dict): ##Here must user movieId not index
@@ -105,17 +116,19 @@ def real_list (movie_user_dict, movieId):
 def rec_movie_list(userId, user_movie_train_dict, movie_user_train_dict, similarity_matrix,cutOff, listLength, nn, step):
     select_movie = []
     watched_list = user_movie_train_dict.get(str(userId))
+	#compute the mean of all ratings
     mean = sum(watched_list.values()) / float(len(watched_list))
     if cutOff != 0:
         maxRating=max(watched_list.values())
         mean = mean + (maxRating-mean)/2
+	#examine if an user "like" or "dislike" a particular movie
     for key in watched_list:
         if watched_list.get(key) >= mean:
             index=movieId2index[int(key)]
             select_movie.extend(select_movie_basedon_similarity(similarity_matrix, index, nn, step))
     select_movie = list(set(select_movie))
     
-    if len(select_movie) > listLength: #recommend 50 movies or 100
+    if len(select_movie) > listLength: #recommend 50, 100 or 150 movies
         temp_list = []
         for movie in select_movie:
             temp_list.append((movie, len(movie_user_train_dict.get(str(movie)))))
@@ -134,19 +147,14 @@ def movie_realwatch_list (user_movie_test_dict, userId):
     userId = str(userId)
     return user_movie_test_dict.get(userId,{})
 
-import json
 with open("user_movie_train_dict.json") as f:
     user_movie_train_dict = json.load(f)
 f.close
 
-
-import json
 with open("movie_user_train_dict.json") as f:
     movie_user_train_dict = json.load(f)
 f.close
 
-
-import json
 with open("user_movie_test_dict.json") as f:
     user_movie_test_dict = json.load(f)
 f.close
@@ -160,11 +168,11 @@ precision = []
 steps = [0.02,0.1]
 # number of nearest neighbor
 nn = [1,3,5,10]
-# use mean for threshold of eating?
+# use mean for threshold of preference
 cutOffs = [0,1]
 # length of recommendation list
 listLengths = [50, 100, 150]
-
+# generate list and compute recall and precision
 for step in steps:
     for k in nn:
         for cutOff in cutOffs:
@@ -188,6 +196,7 @@ f.close()
 recall=[]
 precision=[]
 
+# compute recall and precision to find an optional "step" value
 for step in steps:
     for k in nn:
         for i in range(row):
