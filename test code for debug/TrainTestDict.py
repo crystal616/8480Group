@@ -1,6 +1,4 @@
 '''
-Created on Dec 5, 2018
-
 @author: Ying
 '''
 import json
