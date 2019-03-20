@@ -1,6 +1,4 @@
 '''
-Created on Dec 4, 2018
-
 @author: Ying
 ''' 
 import pandas as pd
